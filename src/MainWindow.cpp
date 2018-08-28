@@ -2,10 +2,11 @@
 #include <QVBoxLayout>
 #include <QLineEdit>
 #include <QLabel>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
-	myString("Today is Tuesday")
+	myString("Today is today")
 {
 	auto *widget = new QWidget(this);
 	auto *layoutMain = new QVBoxLayout(widget);
@@ -26,19 +27,27 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::setBoldForMatching(const QString &p_text, QLabel *label) const
 {
-	QRegExp regExp(p_text.toLower(), Qt::CaseInsensitive, QRegExp::RegExp);
+	QRegExp regExp(p_text, Qt::CaseInsensitive, QRegExp::RegExp);
 	QString str = myString;
 
-	regExp.indexIn(str, 0);
-
-	QStringList matches(regExp.capturedTexts());
-
-	if (matches.isEmpty())
+	if (p_text.isEmpty()) {
+		label->setText(myString);
 		return;
+	}
 
-	QString match(matches.first());
+	int count = 0;
+	int pos = 0;
+	QStringList matches;
 
-	str.replace(match, "<b>" + match + "</b>");
+	while ((pos = regExp.indexIn(str, pos)) != -1) {
+		++count;
+		pos += regExp.matchedLength();
+		matches.append(regExp.capturedTexts());
+	}
+
+	foreach (const QString match, matches) {
+		str.replace(match, "<b>" + match + "</b>");
+	}
 
 	label->setText(str);
 }
