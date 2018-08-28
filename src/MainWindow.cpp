@@ -45,7 +45,7 @@ void MainWindow::setBoldForMatching(const QString &p_text, QLabel *label) const
 		matches.append(regExp.capturedTexts());
 	}
 
-	foreach (const QString match, matches) {
+	foreach (const QString &match, matches) {
 		str.replace(match, "<b>" + match + "</b>");
 	}
 
